@@ -12,7 +12,8 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(st.secrets["gcp_service
 client = gspread.authorize(creds)
 
 # Open your Google Sheet
-sheet = client.open("All R&D New Master Supply 2025-2027")
+sheet = client.open("All R&D New Master Supply 2025–2027")
+
 
 # Load a specific worksheet
 projects_data = sheet.worksheet("ProjectsList").get_all_records()
