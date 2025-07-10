@@ -1,40 +1,25 @@
 import streamlit as st
-import pandas as pd
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-st.set_page_config(page_title="R&D Dashboard", layout="wide")
+st.set_page_config(page_title="🔍 Sheet Access Diagnostic", layout="wide")
+st.title("🧪 Google Sheet Connection Test")
 
-st.title("🔬 R&D Resource & Portfolio Dashboard")
-
-# Auth
+# Setup credentials
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_dict(st.secrets["gcp_service_account"], scope)
 client = gspread.authorize(creds)
 
-# Load the Sheet
-sheet = client.open_by_key("1qrXjp8Z_2hGAThsuwE14TCv2sPQsZJMiplomTBeXBog")
+try:
+    # Try to open by key
+    sheet = client.open_by_key("1qrXjp8Z_2hGAThsuwE14TCv2sPQsZJMiplomTBeXBog")
+    st.success("✅ Successfully connected to the Google Sheet.")
 
-# Define worksheet names
-tabs = {
-    "📋 Project List": "Portfolio DB",
-    "👥 Resource List": "R&D Resource DB",
-    "📊 Allocations – ONC": "ONC",
-    "📊 Allocations – WH": "WH",
-    "📊 Allocations – OH": "OH",
-    "📊 Allocations – XBU": "XBU",
-    "📊 Allocations – ECD": "ECD"
-}
+    # List all available worksheet names
+    tabs = sheet.worksheets()
+    st.write("📄 Sheet Tabs Found:")
+    for tab in tabs:
+        st.markdown(f"- {tab.title}")
 
-# Create Streamlit Tabs
-tab_objs = st.tabs(list(tabs.keys()))
-
-for i, (tab_label, sheet_name) in enumerate(tabs.items()):
-    with tab_objs[i]:
-        st.subheader(f"{tab_label}")
-        try:
-            data = sheet.worksheet(sheet_name).get_all_records()
-            df = pd.DataFrame(data)
-            st.dataframe(df, use_container_width=True)
-        except Exception as e:
-            st.error(f"Error loading sheet '{sheet_name}': {e}")
+except Exception as e:
+    st.error(f"❌ Failed to connect to the sheet.\n\n**Error:** {e}")
