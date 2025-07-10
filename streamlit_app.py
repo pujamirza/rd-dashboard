@@ -12,7 +12,8 @@ client = gspread.authorize(creds)
 
 try:
     # Try to open by key
-    sheet = client.open_by_key("1qrXjp8Z_2hGAThsuwE14TCv2sPQsZJMiplomTBeXBog")
+    sheet = client.open_by_key("11CMb-1x9YDA1kh0ihdPb7PUpnb5hsDXPWbVMK7PtDSU")
+
     st.success("✅ Successfully connected to the Google Sheet.")
 
     # List all available worksheet names
